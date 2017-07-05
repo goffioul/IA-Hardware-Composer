@@ -68,7 +68,8 @@ class DisplayPlaneState {
   }
 
   void AddLayers(const std::vector<size_t> &source_layers,
-                 const HwcRect<int> &display_frame, State state) {
+                 const HwcRect<int> &display_frame, State state,
+                 bool cursor_layer) {
     for (const int &index : source_layers) {
       source_layers_.emplace_back(index);
     }
@@ -77,6 +78,7 @@ class DisplayPlaneState {
     display_frame_.right = display_frame.right;
     display_frame_.bottom = display_frame.bottom;
     state_ = state;
+    cursor_plane_ = cursor_layer;
   }
 
   void UpdateDisplayFrame(const HwcRect<int> &display_frame) {
@@ -168,6 +170,14 @@ class DisplayPlaneState {
     return clear_surface_;
   }
 
+  void SetCursorPlane() {
+    cursor_plane_ = true;
+  }
+
+  bool IsCursorPlane() const {
+    return cursor_plane_;
+  }
+
  private:
   State state_ = State::kScanout;
   DisplayPlane *plane_ = NULL;
@@ -177,6 +187,7 @@ class DisplayPlaneState {
   std::vector<CompositionRegion> composition_region_;
   bool recycled_surface_ = false;
   bool clear_surface_ = true;
+  bool cursor_plane_ = false;
   std::vector<NativeSurface *> surfaces_;
 };
 
